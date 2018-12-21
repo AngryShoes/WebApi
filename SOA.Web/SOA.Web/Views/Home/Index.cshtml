@@ -1,0 +1,182 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>ASP.NET</h1>
+    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+</div>
+
+<div class="row">
+    <p>
+        <input type="text" id="txtId" />
+    </p>
+    <input type="button" value="Get1" id="btnGet1" />
+    <input type="button" value="Get2" id="btnGet2" />
+    <input type="button" value="Get3" id="btnGet3" />
+    <input type="button" value="Get4" id="btnGet4" />
+    <input type="button" value="Get5" id="btnGet5" />
+    <input type="button" value="Get6" id="btnGet6" />
+    <input type="button" value="Get7" id="btnGet7" />
+    <input type="button" value="Get8" id="btnGet8" />
+    <br />
+    <input type="button" value="Post1" id="btnPost1" class="btn-default" />
+    <input type="button" value="Post2" id="btnPost2" class="btn-default" />
+    <input type="button" value="Post3" id="btnPost3" class="btn-default" />
+    <input type="button" value="Post4" id="btnPost4" class="btn-default" />
+    <input type="button" value="Post5" id="btnPost5" class="btn-default" />
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js">
+</script>
+<script>
+    var client = { Id: 4, Name: "Jerry", Address: "Boston" };
+    var info = "Parse Model";
+    // 单个参数
+    $("#btnGet1").click(function () {
+        $.ajax({
+            type: "get",
+            url: "api/client/GetClientById",
+            data: { "id": $("#txtId").val() },
+            success: function (data) {
+                alert(data);
+            },
+            datatype: "json"
+        })
+    });
+    // 两个参数
+    $("#btnGet2").on("click", function () {
+        $.ajax({
+            type: "get",
+            url: "api/client/GetClientByIdName",
+            data: { "name": "Marry", "id": $("#txtId").val() },
+            success: function (data) {
+                alert(data);
+            },
+            datatype: "json"
+        })
+    });
+    // 无参数
+    $("#btnGet3").on("click", function () {
+        $.ajax({
+            type: "GET",
+            url: "api/client/Get",
+            data: "",
+            success: function (data, status) {
+                alert(data);
+                alert('请求状态:' + status);
+            },
+            datatype: "json"
+        })
+    });
+
+    // 传递实体
+    $("#btnGet4").on("click", function () {
+        $.ajax({
+            url: "api/client/GetClientByModel",
+            data: client,
+            type: "GET",
+            success: function (data) {
+                alert(data);
+            },
+            datatype: "json"
+        })
+    });
+
+    // 传递实体 json对象
+    $("#btnGet5").on("click", function () {
+        $.get("api/client/GetClientByModelUri", client, function (data) {
+            alert(data);
+        }, "json");
+    });
+
+    // 传递实体 序列化后传递
+    $("#btnGet6").click(function () {
+        $.get("api/client/GetClientByModelSerialize",
+            { clientString: JSON.stringify(client) },
+            function (data, status) {
+                alert(data);
+                alert('请求状态：' + status);
+            }, "json")
+    });
+
+    $("#btnGet7").click(function () {
+        $.get("api/client/GetClientWithoutHttpGetAttribute", { clientString: JSON.stringify(client) },
+            function (data) {
+                alert(data);
+            }, "json")
+    });
+    $("#btnGet8").click(function () {
+        $.get("api/client/NoGetClientWithoutHttpGetAttribute", { clientString: JSON.stringify(client) },
+            function (data) {
+                alert(data);
+            }, "json")
+    });
+
+    // 单值传递 不需要key（id）
+    $("#btnPost1").on("click", function () {
+        $.ajax({
+            url: "api/client/PostNoKey",
+            data: { "": $("#txtId").val() },
+            type: "POST",
+            success:
+            function (data) {
+                alert(data);
+            }
+        })
+    });
+    // 传key（id）后台接收不到
+    $("#btnPost2").on("click", function () {
+        $.ajax({
+            url: "api/client/PostWithfKey",
+            data: { "Id": $("#txtId").val() },
+            type: "POST",
+            success:
+            function (data) {
+                alert(data);
+            },
+            datatype: "json"
+        })
+    });
+    // 传实体
+    $("#btnPost3").on("click", function () {
+        $.ajax({
+            url: "api/client/PostModel",
+            data: client,
+            type: "POST",
+            success:
+            function (data) {
+                alert(data);
+            },
+            datatype: "json"
+        })
+    });
+    // 传序列化后的实体后台接收实体 需要指明contentType
+    $("#btnPost4").on("click", function () {
+        $.ajax({
+            url: "api/client/PostModelSerialize",
+            data: JSON.stringify(client),
+            type: "POST",
+            success:
+            function (data) {
+                alert(data);
+            },
+            datatype: "json",
+            contentType: 'application/json'
+        })
+    });
+    // Post Object Model
+    $("#btnPost5").on("click", function () {
+        $.ajax({
+            url: "api/client/PostObjectModel",
+            data:  { "Client": client, "Info": info },
+            type: "POST",
+            success:
+            function (data) {
+                alert(data);
+            },
+            datatype: "json"
+        })
+    });
+</script>
